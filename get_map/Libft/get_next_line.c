@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/16 14:32:35 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/15 10:05:23 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/02/20 17:06:16 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,7 @@ int		rd_cdt(size_t *l, char **line, char **p, int *r)
 	}
 	destr = *p;
 	if (*(*p + (int)*l + 1) == '\0')
-	{
-		*p = ft_strnew(1);
-	}
+		*p = NULL;
 	else
 		*p = ft_strdup(*p + (int)*l + 1);
 	ft_strdel(&destr);
