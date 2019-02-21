@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 14:15:06 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/21 12:35:57 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/02/21 12:59:39 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,28 @@
 int			count_expr(char *line)
 {
 	int	i;
-	int	nb_expr;
+	int	count_sp;
+	int	count_tr;
 
 	i = ft_strlen(line) - 1;
-	nb_expr = 0;
-	if (line[0] == '#')
-	{
-		if (i > 1 && line[1] == '#')
-			return (-1);
-		else
-			return (-2);
-	}
+	count_sp = 0;
+	count_tr = 0;
+	if (i > 1 && line[0] == '#' && line[1] == '#')
+		return (-1);
+	else if (line[0] == '#')
+		return (-2);
 	while (i > 0)
 	{
-		nb_expr++;
+		if (line[i] == ' ')
+			count_sp++;
+		else if (line[i] == '-')
+			count_tr++;
 		while (i && (line[i] == ' ' || line[i] == '-'))
 			i--;
 		while (i && ft_isalnum(line[i]))
 			i--;
 	}
-	return (nb_expr);
+	return (count_tr ? count_tr + 1 : count_sp + 1);
 }
 
 int			reader(t_rd *rd, int fd)

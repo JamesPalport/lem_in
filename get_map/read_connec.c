@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:35:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/21 12:32:38 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/02/21 12:47:57 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,10 @@ int			read_connec(t_rd *rd, char *line, int fd)
 	int	c;
 
 	init_connec(rd);
-	if (count_expr(line) == 2)
+	if ((c = count_expr(line)) == 2)
+	{
 		get_connec(rd, line);
+	}
 	free(line);
 	while (get_next_line(fd, &line)
 			&& ((c = count_expr(line)) == 2 || line[0] == '#'))

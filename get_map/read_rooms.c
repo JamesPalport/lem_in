@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:15:32 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/21 12:35:19 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/02/21 12:53:29 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int		handle_dst(int c, char *line)
 {
 	int	dst;
 
-	if (c == 3)
+	if (c >= 3)
 		dst = 0;
 	else if (c == -1)
 	{
@@ -102,7 +102,7 @@ char			*read_map(t_rd *rd, int fd)
 		if (dst != 0)
 		{
 			free(line);
-			if (get_next_line(fd, &line) < 0 || count_expr(line) != 3)
+			if (get_next_line(fd, &line) < 0 || count_expr(line) < 3)
 				ft_strdel(&line);
 		}
 		get_room(rd, line, dst);
