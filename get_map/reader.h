@@ -20,6 +20,9 @@ typedef struct	s_rd
 	t_room	*end;
 }				t_rd;
 
+int				count_expr(char *line);
+char			*read_map(t_rd *rd, int fd);
+int				read_connec(t_rd *rd, char *line, int fd);
 int				reader(t_rd *rd, int fd);
 
 #endif

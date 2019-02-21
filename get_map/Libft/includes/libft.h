@@ -6,18 +6,19 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/09 10:58:46 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/08 11:44:41 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/02/21 12:34:42 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 
 # define LIBFT_H
-# define BUFF_SIZE 12
+# define BUFF_SIZE 64
 
 # include <stdlib.h>
 # include <unistd.h>
 # include <limits.h>
+# include "ft_printf.h"
 
 typedef struct	s_list
 {
