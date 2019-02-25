@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:15:32 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/21 12:53:29 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/02/25 10:41:11 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ static t_room	*new_room(void)
 	return (new);
 }
 
-static void		assign_room(t_rd *rd, t_room *cursor, int dst)
+static void		assign_room(t_all *all, t_room *cursor, int dst)
 {
 	t_room	*assign;
 
-	assign = rd->rooms;
+	assign = all->rooms;
 	if (dst == 0)
 	{
 		while (assign && assign->next)
@@ -37,16 +37,16 @@ static void		assign_room(t_rd *rd, t_room *cursor, int dst)
 		if (assign)
 			assign->next = cursor;
 		else
-			rd->rooms = cursor;
+			all->rooms = cursor;
 	}
 	else if (dst == 1)
-		rd->start = cursor;
+		all->start = cursor;
 	else if (dst == 2)
-		rd->end = cursor;
-	rd->nb_rooms += 1;
+		all->end = cursor;
+	all->nb_rooms += 1;
 }
 
-static int		get_room(t_rd *rd, char *line, int dst)
+static int		get_room(t_all *all, char *line, int dst)
 {
 	t_room	*cursor;
 	int		i;
@@ -63,7 +63,7 @@ static int		get_room(t_rd *rd, char *line, int dst)
 		i--;
 	cursor->x = ft_atoi(line + --i + 2);
 	cursor->name = ft_strsub(line, 0, i + 1);
-	assign_room(rd, cursor, dst);
+	assign_room(all, cursor, dst);
 	return (1);
 }
 
@@ -88,7 +88,7 @@ static int		handle_dst(int c, char *line)
 	return (dst);
 }
 
-char			*read_map(t_rd *rd, int fd)
+char			*read_map(t_all *all, int fd)
 {
 	int		dst;
 	int		c;
@@ -105,7 +105,7 @@ char			*read_map(t_rd *rd, int fd)
 			if (get_next_line(fd, &line) < 0 || count_expr(line) < 3)
 				ft_strdel(&line);
 		}
-		get_room(rd, line, dst);
+		get_room(all, line, dst);
 		ft_strdel(&line);
 	}
 	if (c != 2)

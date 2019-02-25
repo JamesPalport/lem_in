@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   reader.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/02/25 10:27:10 by amerrouc          #+#    #+#             */
+/*   Updated: 2019/02/25 15:33:02 by amerrouc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef READER_H
 # define READER_H
 # include "Libft/includes/libft.h"
@@ -10,19 +22,26 @@ typedef struct	s_room
 	struct s_room	*next;
 }				t_room;
 
-typedef struct	s_rd
+typedef struct	s_routes
 {
-	int		nb_ants;
-	t_room	*rooms;
-	int		nb_rooms;
-	int		**connec;
-	t_room	*start;
-	t_room	*end;
-}				t_rd;
+	char			*path;
+	struct s_routes	*next;
+}				t_routes;
+
+typedef struct	s_all
+{
+	int			nb_ants;
+	t_room		*rooms;
+	int			nb_rooms;
+	int			**connec;
+	t_room		*start;
+	t_room		*end;
+	t_routes	*routes;
+}				t_all;
 
 int				count_expr(char *line);
-char			*read_map(t_rd *rd, int fd);
-int				read_connec(t_rd *rd, char *line, int fd);
-int				reader(t_rd *rd, int fd);
+char			*read_map(t_all *all, int fd);
+int				read_connec(t_all *all, char *line, int fd);
+int				reader(t_all *all, int fd);
 
 #endif
