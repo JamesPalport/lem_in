@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:25:39 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/25 16:07:39 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/01 11:44:33 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,13 @@ static int		append_route(t_all *all, char	*route)
 	new->next = NULL;
 	if (!all->routes)
 		all->routes = new;
-	cursor = all->routes;
-	while (cursor->next)
-		cursor = cursor->next;
-	cursor->next = new;
+	else
+	{
+		cursor = all->routes;
+		while (cursor->next)
+			cursor = cursor->next;
+		cursor->next = new;
+	}
 	return (1);
 }
 
@@ -53,18 +56,20 @@ static void		put_num(char *str, int nb)
 {
 	int	c;
 	int	i;
+	
 
 	c = 1;
 	while (nb / c >= 10)
 		c *= 10;
 	i = 0;
-	while (nb && c)
+	while (nb >= 10 && c)
 	{
 		str[i] = (nb / c) % 10 + '0';
 		nb -= (nb / c) * c;
 		c /= 10;
 		i++;
 	}
+	str[i++] = (nb % 10) + '0';
 	str[i] = '.';
 }
 
@@ -108,18 +113,18 @@ static int		pos_last(char *route)
 	i -= 2;
 	while (i > 0 && route[i] != '.')
 		i--;
-	return (i < 0 ? 0 : i);
+	return (i < 0 ? 0 : i + 1);
 }
 
 static void		rmv_last(char *route)
 {
 	int	i;
-	int	len;
 
-	len = ft_strlen(route);
-	i = pos_last(route);
-	while (i < len)
-		route[i++] = '\0';
+	if ((i = ft_strlen(route) - 1) < 0)
+		return ;
+	route[i] = 0;
+	while (i && route[i] != '.')
+		route[i--] = '\0';
 }
 
 static int		go_next(t_all *all, char *route)
@@ -135,7 +140,7 @@ static int		go_next(t_all *all, char *route)
 	{
 		if (is_poss(all, route, curr, i))
 		{
-			put_num(route, i);
+			put_num(route + ft_strlen(route), i);
 			if (i == all->nb_rooms - 1)
 			{
 				append_route(all, route);
@@ -143,7 +148,10 @@ static int		go_next(t_all *all, char *route)
 				return (1);
 			}
 			else
+			{
 				go_next(all, route);
+				rmv_last(route);
+			}
 		}
 		i++;
 	}
@@ -159,5 +167,6 @@ int				get_routes(t_all *all)
 	route = ft_strnew(len_str(all->nb_rooms));
 	put_num(route, 0);
 	go_next(all, route);
+	free(route);
 	return (1);
 }

@@ -31,6 +31,22 @@ void	free_all(t_all *all)
 	free(all->end);
 }
 
+char	*get_name(t_all *all, int num)
+{
+	int		i;
+	t_room	*cursor;
+
+	i = 1;
+	if (num == 0)
+		return (all->start->name);
+	if (num == all->nb_rooms - 1)
+		return (all->end->name);
+	cursor = all->rooms;
+	while (i++ != num)
+		cursor = cursor->next;
+	return (cursor->name);
+}
+
 void	display_read(t_all *all)
 {
 	int		i;
@@ -61,10 +77,35 @@ void	display_read(t_all *all)
 	}
 }
 
-int	main(void)
+void	display_routes(t_all *all)
+{
+	t_routes	*cursor;
+	int			i;
+	char		*pt;
+
+	cursor = all->routes;
+	ft_putendl("routes");
+	while (cursor)
+	{
+		i = 0;
+		pt = cursor->path;
+		while (pt[i])
+		{
+			ft_printf("%s->", get_name(all, ft_atoi(pt + i)));
+			while (pt[i] != '.')
+				i++;
+			i++;
+		}
+		ft_putstr("\n");
+		cursor = cursor->next;
+	}
+}
+
+int	main(int argc, char **argv)
 {
 	int		fd;
 	t_all	all;
+	char	*name;
 
 	all.nb_ants = 0;
 	all.rooms = NULL;
@@ -72,10 +113,18 @@ int	main(void)
 	all.connec = NULL;
 	all.start = NULL;
 	all.end = NULL;
-	fd = open("map", O_RDONLY);
+	all.routes = NULL;
+	if (argc > 1)
+		name = argv[argc - 1];
+	else
+		name = "map";
+	fd = open(name, O_RDONLY);
 	reader(&all, fd);
 	close(fd);
 	display_read(&all);
+	ft_putstr("\n");
+	get_routes(&all);
+	display_routes(&all);
 	free_all(&all);
 	return (1);
 }

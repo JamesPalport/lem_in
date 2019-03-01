@@ -1,0 +1,19 @@
+3
+##start
+start 432 0 1
+##end
+fin hehe 1 0
+0 0 0
+bonjour 1 1
+2 2 2
+0-bonjour
+0-2
+bonjour-0
+bonjour-0
+2-bonjour
+start 432-0
+fin hehe-2
+fin hehe-bonjour
+fin hehe-0
+fin hehe-2
+fin hehe-bonjour

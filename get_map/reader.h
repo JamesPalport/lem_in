@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:27:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/25 15:33:02 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/01 09:54:47 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,6 @@ int				count_expr(char *line);
 char			*read_map(t_all *all, int fd);
 int				read_connec(t_all *all, char *line, int fd);
 int				reader(t_all *all, int fd);
+int				get_routes(t_all *all);
 
 #endif
