@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:15:32 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/25 10:41:11 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/10 22:03:43 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static t_room	*new_room(void)
 	new->name = NULL;
 	new->x = 0;
 	new->y = 0;
+	new->empty = 1;
 	new->next = NULL;
 	return (new);
 }
@@ -85,7 +86,20 @@ static int		handle_dst(int c, char *line)
 			dst = -1;
 		}
 	}
+	else
+		dst = -2;
 	return (dst);
+}
+
+static void		ignore_comments(char **line, int fd, int *c)
+{
+	free(*line);
+	get_next_line(fd, line);
+	while ((*c = count_expr(*line)) == -2)
+	{
+		free(*line);
+		get_next_line(fd, line);
+	}
 }
 
 char			*read_map(t_all *all, int fd)
@@ -97,14 +111,19 @@ char			*read_map(t_all *all, int fd)
 	while (get_next_line(fd, &line) > 0
 			&& ((c = count_expr(line)) == 3 || c < 0 || line[0] == '#'))
 	{
+		if (c == -2)
+			ignore_comments(&line, fd, &c);
 		if ((dst = handle_dst(c, line)) < 0)
 			return (NULL);
 		if (dst != 0)
 		{
 			free(line);
-			if (get_next_line(fd, &line) < 0 || count_expr(line) < 3)
+			if (get_next_line(fd, &line) < 0
+					|| ((c = count_expr(line)) < 3 && c != -2))
 				ft_strdel(&line);
 		}
+		if (c == -2)
+			ignore_comments(&line, fd, &c);
 		get_room(all, line, dst);
 		ft_strdel(&line);
 	}

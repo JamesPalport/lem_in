@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 14:15:06 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/02/25 10:40:01 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/05 12:45:27 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,17 @@ int			count_expr(char *line)
 int			reader(t_all *all, int fd)
 {
 	char	*line;
-	int		c;
-	int		dst;
 
 	line = NULL;
 	if (get_next_line(fd, &line) < 0)
 		return (0);
 	all->nb_ants = ft_atoi(line);
+	if (line[0] == '-')
+		all->nb_ants = -1;
 	free(line);
 	line = read_map(all, fd);
-	if (all->nb_ants <= 0 || all->nb_rooms <= 1 || !line)
+	if (all->nb_ants <= 0 || all->nb_rooms <= 1 || !line
+			|| !all->start || !all->end)
 		return (0);
 	return (read_connec(all, line, fd));
 }

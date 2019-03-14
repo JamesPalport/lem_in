@@ -6,166 +6,110 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:25:39 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/01 11:44:33 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/14 11:04:18 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "reader.h"
 
-static int		len_str(int nb_rooms)
+static void	append_route(t_all *all, t_routes *new)
 {
-	int			c;
-	int			tmp;
-
-	tmp = nb_rooms;
-	c = 1;
-	while (tmp >= 10)
-	{
-		tmp /= 10;
-		c++;
-	}
-	return ((c + 1) * nb_rooms + 1);
-}
-
-static int		append_route(t_all *all, char	*route)
-{
-	t_routes	*new;
 	t_routes	*cursor;
 
-	if (!(new = (t_routes *)malloc(sizeof(t_routes))))
-		return (0);
-	if (!(new->path = ft_strdup(route)))
-	{
-		free(new);
-		return (0);
-	}
 	new->next = NULL;
-	if (!all->routes)
-		all->routes = new;
-	else
+	if (all->routes)
 	{
 		cursor = all->routes;
 		while (cursor->next)
 			cursor = cursor->next;
 		cursor->next = new;
 	}
-	return (1);
+	else
+		all->routes = new;
 }
 
-static void		put_num(char *str, int nb)
+static int	save_route(t_all *all, int *route)
 {
-	int	c;
-	int	i;
-	
+	int			i;
+	int			j;
+	t_routes	*new;
 
-	c = 1;
-	while (nb / c >= 10)
-		c *= 10;
 	i = 0;
-	while (nb >= 10 && c)
-	{
-		str[i] = (nb / c) % 10 + '0';
-		nb -= (nb / c) * c;
-		c /= 10;
+	while (route[i] != -1 && i < all->nb_rooms)
 		i++;
-	}
-	str[i++] = (nb % 10) + '0';
-	str[i] = '.';
-}
-
-static int		is_poss(t_all *all, char *route, int j, int i)
-{
-	int			n;
-	char		*verif;
-	int			len;
-	t_routes	*cursor;
-
-	if (i == j || all->connec[j][i] == 0)
+	if (!(new = (t_routes *)malloc(sizeof(t_routes))))
 		return (0);
-	n = 0;
-	verif = ft_itoa(i);
-	len = ft_strlen(verif);
-	while (route[n] && ft_strncmp(route + n, verif, len))
+	if (!(new->path = (int *)malloc(sizeof(int) * i)))
 	{
-		while (route[n] && route[n] != '.')
-			n++;
-		if (route[n])
-			n++;
-	}
-	free(verif);
-	if (route[n])
+		free(new);
 		return (0);
-	cursor = all->routes;
-	while (cursor)
-	{
-		if (!ft_strcmp(cursor->path, route))
-			return (0);
-		cursor = cursor->next;
 	}
+	new->len = --i;
+	j = 0;
+	while (i >= 0)
+	{
+		new->path[j] = route[i];
+		i--;
+		j++;
+	}
+	append_route(all, new);
 	return (1);
 }
 
-static int		pos_last(char *route)
+static int	is_auth(t_all *all, int curr, int i, int *route)
 {
-	int	i;
+	int	j;
 
-	i = ft_strlen(route);
-	i -= 2;
-	while (i > 0 && route[i] != '.')
-		i--;
-	return (i < 0 ? 0 : i + 1);
-}
-
-static void		rmv_last(char *route)
-{
-	int	i;
-
-	if ((i = ft_strlen(route) - 1) < 0)
-		return ;
-	route[i] = 0;
-	while (i && route[i] != '.')
-		route[i--] = '\0';
-}
-
-static int		go_next(t_all *all, char *route)
-{
-	int	curr;
-	int	i;
-
-	if (!ft_strlen(route))
-		return (0);
-	curr = ft_atoi(route + pos_last(route));
-	i = 1;
-	while (i < all->nb_rooms)
-	{
-		if (is_poss(all, route, curr, i))
-		{
-			put_num(route + ft_strlen(route), i);
-			if (i == all->nb_rooms - 1)
-			{
-				append_route(all, route);
-				rmv_last(route);
-				return (1);
-			}
-			else
-			{
-				go_next(all, route);
-				rmv_last(route);
-			}
-		}
-		i++;
-	}
-	rmv_last(route);
+	j = 0;
+	while (j < all->nb_rooms && route[j] != -1)
+		if (route[j++] == i)
+			return (0);
+	if (i != curr && i != all->nb_rooms - 1 && all->connec[curr][i])
+/*				&& (all->score[curr] == -1))
+					|| all->score[curr] >= all->score[i]))*/
+		return (1);
 	return (0);
 }
 
-int				get_routes(t_all *all)
+static void	go_next(t_all *all, int *route)
 {
-	char	*route;
-	int		i;
+	int	i;
+	int	abs;
+	int	curr;
 
-	route = ft_strnew(len_str(all->nb_rooms));
-	put_num(route, 0);
+	abs = 0;
+	while (abs < all->nb_rooms && route[abs] != -1)
+		abs++;
+	if (abs == all->nb_rooms)
+		return ;
+	curr = route[abs - 1];
+	i = 0;
+	while (i < all->nb_rooms)
+	{
+		if (is_auth(all, curr, i, route))
+		{
+			route[abs] = i;
+			if (!route[abs])
+				save_route(all, route);
+			else
+				go_next(all, route);
+			route[abs] = -1;
+		}
+		i++;
+	}
+}
+
+int			get_routes(t_all *all)
+{
+	int	*route;
+	int	i;
+
+	if (!(route = (int *)malloc(sizeof(int) * all->nb_rooms)))
+		return (0);
+	i = 0;
+	while (i < all->nb_rooms)
+		route[i++] = -1;
+	route[0] = all->nb_rooms - 1;
 	go_next(all, route);
 	free(route);
 	return (1);

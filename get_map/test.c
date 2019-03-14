@@ -8,6 +8,8 @@ void	free_all(t_all *all)
 {
 	t_room	*cursor;
 	t_room	*del;
+	t_routes	*del_routes;
+	t_routes	*cursor_routes;
 	int		i;
 
 	cursor = all->rooms;
@@ -21,6 +23,14 @@ void	free_all(t_all *all)
 	i = 0;
 	while (all->connec && i < all->nb_rooms && all->connec[i])
 		free(all->connec[i++]);
+	del_routes = all->routes;
+	while (del_routes)
+	{
+		cursor_routes = del_routes;
+		free(del_routes->path);
+		del_routes = del_routes->next;
+		free(cursor_routes);
+	}
 	if (all->connec)
 		free(all->connec);
 	if (all->start)
@@ -81,7 +91,7 @@ void	display_routes(t_all *all)
 {
 	t_routes	*cursor;
 	int			i;
-	char		*pt;
+	int			*pt;
 
 	cursor = all->routes;
 	ft_putendl("routes");
@@ -89,14 +99,12 @@ void	display_routes(t_all *all)
 	{
 		i = 0;
 		pt = cursor->path;
-		while (pt[i])
+		while (i < cursor->len)
 		{
-			ft_printf("%s->", get_name(all, ft_atoi(pt + i)));
-			while (pt[i] != '.')
-				i++;
+			ft_printf("%s->", get_name(all, pt[i]));
 			i++;
 		}
-		ft_putstr("\n");
+		ft_printf("%s\n", get_name(all, pt[i]));
 		cursor = cursor->next;
 	}
 }
@@ -119,10 +127,17 @@ int	main(int argc, char **argv)
 	else
 		name = "map";
 	fd = open(name, O_RDONLY);
-	reader(&all, fd);
+	if (!reader(&all, fd) || !check_map(&all))
+	{
+		close(fd);
+		free_all(&all);
+		ft_putendl("map error");
+		return (0);
+	}
 	close(fd);
 	display_read(&all);
 	ft_putstr("\n");
+	bfs(&all);
 	get_routes(&all);
 	display_routes(&all);
 	free_all(&all);
