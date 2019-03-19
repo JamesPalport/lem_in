@@ -65,9 +65,9 @@ void	display_read(t_all *all)
 
 	ft_printf("nombre de fourmis\t:%d\n", all->nb_ants);
 	ft_printf("nombre de salles\t:%d\n", all->nb_rooms);
-	cursor = all->start;
+	if ((cursor = all->start) != NULL)
 	ft_printf("debut\t:%s\tx = %d\ty = %d\n", cursor->name, cursor->x, cursor->y);
-	cursor = all->end;
+	if ((cursor = all->end) != NULL)
 	ft_printf("fin\t:%s\tx = %d\ty = %d\n", cursor->name, cursor->x, cursor->y);
 	cursor = all->rooms;
 	while (cursor)
@@ -114,6 +114,7 @@ int	main(int argc, char **argv)
 	int		fd;
 	t_all	all;
 	char	*name;
+	t_tmpr	tmp_routes;
 
 	all.nb_ants = 0;
 	all.rooms = NULL;
@@ -122,6 +123,10 @@ int	main(int argc, char **argv)
 	all.start = NULL;
 	all.end = NULL;
 	all.routes = NULL;
+	all.score = NULL;
+	all.max_score = 0;
+	tmp_routes.to_vis = NULL;
+	tmp_routes.new_vis = NULL;
 	if (argc > 1)
 		name = argv[argc - 1];
 	else
@@ -137,9 +142,14 @@ int	main(int argc, char **argv)
 	close(fd);
 	display_read(&all);
 	ft_putstr("\n");
-	bfs(&all);
+	bfs(&all, -1, &tmp_routes);
+	get_routes(&all);
+	display_routes(&all);
+	bfs(&all, all.max_score + 5, &tmp_routes);
 	get_routes(&all);
 	display_routes(&all);
 	free_all(&all);
+	free(tmp_routes.to_vis);
+	free(tmp_routes.new_vis);
 	return (1);
 }

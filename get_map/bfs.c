@@ -6,17 +6,21 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/06 10:49:28 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/14 11:04:21 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/19 14:22:30 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "reader.h"
 
-static int		keep_vis(int *to_vis, int size)
+static int		keep_vis(int *to_vis, int size, int exp_score, int max_score)
 {
 	int	i;
 
 	i = 0;
+	if (exp_score > 0 && exp_score <= max_score)
+		return (0);
+	if (exp_score == -1 && to_vis[size - 1])
+		return (0);
 	while (i < size)
 		if (to_vis[i++])
 			return (1);
@@ -45,63 +49,58 @@ static void		assign_score(t_all *all, int *to_vis, int *new_vis)
 {
 	int			i;
 	int			j;
-	static int	scr;
 
 	i = 0;
-	while (i < all->nb_rooms)
+	while (i < all->nb_rooms - 1)
 	{
 		if (to_vis[i])
 		{
-			to_vis[i] = 0;
 			if (!all->score[i])
-				all->score[i] = scr;
+				all->score[i] = all->max_score;
 			j = 1;
 			while (j < all->nb_rooms)
 			{
-				if (i != j && all->connec[i][j] && !all->score[j])
+				if (i != j && all->connec[i][j] && all->score[j] <= 0)
 					new_vis[j] = 1;
 				j++;
 			}
 		}
 		i++;
 	}
-	scr++;
+	all->max_score++;
 	transf_vis(to_vis, new_vis, all->nb_rooms);
 }
 
-static void		init_vect(t_all *all, int *to_vis, int *new_vis)
+static int		init_vect(t_all *all, t_tmpr *tmp)
 {
 	int	i;
 
+	if (!(tmp->to_vis = (int *)malloc(sizeof(int) * all->nb_rooms)))
+		return (0);
+	if (!(tmp->new_vis = (int *)malloc(sizeof(int) * all->nb_rooms)))
+		return (0);
 	i = 0;
 	while (i < all->nb_rooms)
 	{
-		to_vis[i] = 0;
-		new_vis[i] = 0;
+		tmp->to_vis[i] = 0;
+		tmp->new_vis[i] = 0;
 		all->score[i++] = 0;
 	}
-	to_vis[0] = 1;
+	tmp->to_vis[0] = 1;
 	all->score[0] = -1;
 	all->score[all->nb_rooms - 1] = -1;
+	return (1);
 }
 
-void			bfs(t_all *all)
+void			bfs(t_all *all, int exp_score, t_tmpr *tmp)
 {
-	int	*to_vis;
-	int	*new_vis;
-
-	if (!(all->score = (int *)malloc(sizeof(int) * all->nb_rooms)))
+	if (!all->score
+			&& !(all->score = (int *)malloc(sizeof(int) * all->nb_rooms)))
 		return ;
-	if (!(new_vis = (int *)malloc(sizeof(int) * all->nb_rooms)))
-		return ;
-	if (!(to_vis = (int *)malloc(sizeof(int) * all->nb_rooms)))
-	{
-		free(new_vis);
-		return ;
-	}
-	init_vect(all, to_vis, new_vis);
-	while (keep_vis(to_vis, all->nb_rooms))
-		assign_score(all, to_vis, new_vis);
-	free(new_vis);
-	free(to_vis);
+	if (!tmp->new_vis && !tmp->to_vis)
+		if (!init_vect(all, tmp))
+			return ;
+	while (keep_vis(tmp->to_vis, all->nb_rooms, exp_score, all->max_score))
+		assign_score(all, tmp->to_vis, tmp->new_vis);
+	tmp->to_vis[all->nb_rooms - 1] = 0;
 }
