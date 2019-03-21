@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/06 10:49:28 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/19 14:22:30 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/21 12:07:22 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,48 +27,40 @@ static int		keep_vis(int *to_vis, int size, int exp_score, int max_score)
 	return (0);
 }
 
-static void		transf_vis(int *to_vis, int *new_vis, int len)
+static void		transf_vis(int **to_vis, int **new_vis)
 {
-	int	i;
+	int	*tmp;
 
-	i = 0;
-	while (i < len)
-	{
-		if (new_vis[i])
-		{
-			to_vis[i] = 1;
-			new_vis[i] = 0;
-		}
-		else
-			to_vis[i] = 0;
-		i++;
-	}
+	tmp = *to_vis;
+	*to_vis = *new_vis;
+	*new_vis = tmp;
 }
 
-static void		assign_score(t_all *all, int *to_vis, int *new_vis)
+static void		assign_score(t_all *all, int **to_vis, int **new_vis)
 {
 	int			i;
 	int			j;
 
 	i = 0;
+	all->max_score++;
 	while (i < all->nb_rooms - 1)
 	{
-		if (to_vis[i])
+		if ((*to_vis)[i])
 		{
+			(*to_vis)[i] = 0;
 			if (!all->score[i])
 				all->score[i] = all->max_score;
 			j = 1;
 			while (j < all->nb_rooms)
 			{
 				if (i != j && all->connec[i][j] && all->score[j] <= 0)
-					new_vis[j] = 1;
+					(*new_vis)[j] = 1;
 				j++;
 			}
 		}
 		i++;
 	}
-	all->max_score++;
-	transf_vis(to_vis, new_vis, all->nb_rooms);
+	transf_vis(to_vis, new_vis);
 }
 
 static int		init_vect(t_all *all, t_tmpr *tmp)
@@ -101,6 +93,6 @@ void			bfs(t_all *all, int exp_score, t_tmpr *tmp)
 		if (!init_vect(all, tmp))
 			return ;
 	while (keep_vis(tmp->to_vis, all->nb_rooms, exp_score, all->max_score))
-		assign_score(all, tmp->to_vis, tmp->new_vis);
+		assign_score(all, &(tmp->to_vis), &(tmp->new_vis));
 	tmp->to_vis[all->nb_rooms - 1] = 0;
 }

@@ -144,9 +144,11 @@ int	main(int argc, char **argv)
 	ft_putstr("\n");
 	bfs(&all, -1, &tmp_routes);
 	get_routes(&all);
+	all.routes = order_routes(all.routes);
 	display_routes(&all);
 	bfs(&all, all.max_score + 5, &tmp_routes);
 	get_routes(&all);
+	all.routes = order_routes(all.routes);
 	display_routes(&all);
 	free_all(&all);
 	free(tmp_routes.to_vis);

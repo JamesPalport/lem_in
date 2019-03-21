@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:15:32 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/10 22:03:43 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/21 11:36:12 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static int		get_room(t_all *all, char *line, int dst)
 	cursor->x = ft_atoi(line + --i + 2);
 	cursor->name = ft_strsub(line, 0, i + 1);
 	assign_room(all, cursor, dst);
+	free(line);
 	return (1);
 }
 
@@ -125,7 +126,6 @@ char			*read_map(t_all *all, int fd)
 		if (c == -2)
 			ignore_comments(&line, fd, &c);
 		get_room(all, line, dst);
-		ft_strdel(&line);
 	}
 	if (c != 2)
 		ft_strdel(&line);

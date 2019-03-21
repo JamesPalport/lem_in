@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:25:39 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/19 16:09:04 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:07:06 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,39 +64,12 @@ static int	is_auth(t_all *all, int curr, int i, int *route)
 	while (j < all->nb_rooms && route[j] != -1)
 		if (route[j++] == i)
 			return (0);
-	if (i != curr && all->connec[curr][i]
-			&& ((all->score[curr] == -1)
-				|| all->score[curr] >= all->score[i]))
+	if (i != curr && all->connec[curr][i] && all->score[i])
+/* && ((all->score[curr] == -1)
+ * || all->score[curr] >= all->score[i]))
+				*/
 		return (1);
 	return (0);
-}
-
-int			check_new_route(t_all *all, int *route)
-{
-	int			j;
-	int			i;
-	int			same;
-	int			route_len;
-	t_routes	*cursor;
-
-	route_len = 0;
-	while (route_len < all->nb_rooms && route[route_len] != -1)
-		route_len++;
-	cursor = all->routes;
-	while (cursor)
-	{
-		j = route_len - 1;
-		i = 0;
-		while (i < cursor->len && j >= 0 && cursor->path[i] == route[j])
-		{
-			i++;
-			j--;
-		}
-		if (i == cursor->len)
-			return (0);
-		cursor = cursor->next;
-	}
-	return (1);
 }
 
 static void	go_next(t_all *all, int *route)
@@ -129,8 +102,9 @@ static void	go_next(t_all *all, int *route)
 
 int			get_routes(t_all *all)
 {
-	int	*route;
-	int	i;
+	int			*route;
+	int			i;
+	static int	min_score;
 
 	if (!(route = (int *)malloc(sizeof(int) * all->nb_rooms)))
 		return (0);
@@ -141,7 +115,7 @@ int			get_routes(t_all *all)
 	i = 0;
 	while (i < all->nb_rooms - 1)
 	{
-		if (all->connec[all->nb_rooms - 1][i] && all->score[i])
+		if (all->connec[all->nb_rooms - 1][i] && all->score[i] > min_score)
 		{
 			route[1] = i;
 			go_next(all, route);
@@ -150,5 +124,6 @@ int			get_routes(t_all *all)
 		i++;
 	}
 	free(route);
+	min_score = all->max_score;
 	return (1);
 }
