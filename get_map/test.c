@@ -109,6 +109,31 @@ void	display_routes(t_all *all)
 	}
 }
 
+void	display_select(t_all *all)
+{
+	int			j;
+	t_routes	*cursor;
+	int			i;
+	int			*pt;
+
+	j = 0;
+	ft_putendl("selected");
+	while (all->select[j])
+	{
+		i = 0;
+		cursor = all->select[j];
+		pt = cursor->path;
+		while (i < cursor->len)
+		{
+			ft_printf("%s->", get_name(all, pt[i]));
+			i++;
+		}
+		ft_printf("%s\n", get_name(all, pt[i]));
+		cursor = cursor->next;
+		j++;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	int		fd;
@@ -125,6 +150,7 @@ int	main(int argc, char **argv)
 	all.routes = NULL;
 	all.score = NULL;
 	all.max_score = 0;
+	all.select = NULL;
 	tmp_routes.to_vis = NULL;
 	tmp_routes.new_vis = NULL;
 	if (argc > 1)
@@ -150,6 +176,8 @@ int	main(int argc, char **argv)
 	get_routes(&all);
 	all.routes = order_routes(all.routes);
 	display_routes(&all);
+	chose_route(&all);
+	display_select(&all);
 	free_all(&all);
 	free(tmp_routes.to_vis);
 	free(tmp_routes.new_vis);
