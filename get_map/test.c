@@ -41,7 +41,7 @@ void	free_all(t_all *all)
 	free(all->end);
 }
 
-char	*get_name(t_all *all, int num)
+static char	*get_name(t_all *all, int num)
 {
 	int		i;
 	t_room	*cursor;
@@ -166,18 +166,18 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	close(fd);
-	display_read(&all);
-	ft_putstr("\n");
+//	display_read(&all);
 	bfs(&all, -1, &tmp_routes);
 	get_routes(&all);
 	all.routes = order_routes(all.routes);
-	display_routes(&all);
-	bfs(&all, all.max_score + 5, &tmp_routes);
+//	display_routes(&all);
+	bfs(&all, all.max_score + all.routes->len, &tmp_routes);
 	get_routes(&all);
 	all.routes = order_routes(all.routes);
-	display_routes(&all);
+//	display_routes(&all);
 	chose_route(&all);
-	display_select(&all);
+//	display_select(&all);
+	move_ants(&all);
 	free_all(&all);
 	free(tmp_routes.to_vis);
 	free(tmp_routes.new_vis);

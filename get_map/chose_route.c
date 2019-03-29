@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 10:14:27 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/25 16:03:06 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/03/29 15:15:52 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,8 @@ static void	search_replace(t_all *all, t_routes *route, int conflict, int n)
 	}
 	similar = search(route->next, all->select[conflict], m);
 	if (similar && ((similar->len + (all->nb_ants / 2))
-			< (all->select[conflict]->len + all->nb_ants)))
+			< (all->select[conflict]->len + all->nb_ants))
+			&& ft_comp_routes(route, similar))
 	{
 		all->select[conflict] = route;
 		all->select[n] = similar;
