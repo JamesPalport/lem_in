@@ -87,7 +87,7 @@ void	display_read(t_all *all)
 	}
 }
 
-void	display_routes(t_all *all)
+/*void	display_routes(t_all *all)
 {
 	t_routes	*cursor;
 	int			i;
@@ -132,14 +132,14 @@ void	display_select(t_all *all)
 		cursor = cursor->next;
 		j++;
 	}
-}
+}*/
 
 int	main(int argc, char **argv)
 {
 	int		fd;
 	t_all	all;
 	char	*name;
-	t_tmpr	tmp_routes;
+//	t_tmpr	tmp_routes;
 
 	all.nb_ants = 0;
 	all.rooms = NULL;
@@ -148,11 +148,11 @@ int	main(int argc, char **argv)
 	all.start = NULL;
 	all.end = NULL;
 	all.routes = NULL;
-	all.score = NULL;
+/*	all.score = NULL;
 	all.max_score = 0;
-	all.select = NULL;
-	tmp_routes.to_vis = NULL;
-	tmp_routes.new_vis = NULL;
+	all.select = NULL;*/
+//	tmp_routes.to_vis = NULL;
+//	tmp_routes.new_vis = NULL;
 	if (argc > 1)
 		name = argv[argc - 1];
 	else
@@ -166,8 +166,8 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	close(fd);
-//	display_read(&all);
-	bfs(&all, -1, &tmp_routes);
+	display_read(&all);
+/*	bfs(&all, -1, &tmp_routes);
 	get_routes(&all);
 	all.routes = order_routes(all.routes);
 //	display_routes(&all);
@@ -180,6 +180,6 @@ int	main(int argc, char **argv)
 	move_ants(&all);
 	free_all(&all);
 	free(tmp_routes.to_vis);
-	free(tmp_routes.new_vis);
+	free(tmp_routes.new_vis);*/
 	return (1);
 }

@@ -69,65 +69,62 @@ static int		get_room(t_all *all, char *line, int dst)
 	return (1);
 }
 
-static int		handle_dst(int c, char *line)
+static void		ignore_comments(char **line, int fd)
 {
-	int	dst;
-
-	if (c >= 3)
-		dst = 0;
-	else if (c == -1)
-	{
-		if (!ft_strcmp("start", line + 2))
-			dst = 1;
-		else if (!ft_strcmp("end", line + 2))
-			dst = 2;
-		else
-		{
-			free(line);
-			dst = -1;
-		}
-	}
-	else
-		dst = -2;
-	return (dst);
-}
-
-static void		ignore_comments(char **line, int fd, int *c)
-{
-	free(*line);
-	get_next_line(fd, line);
-	while ((*c = count_expr(*line)) == -2)
+	while (((*line)[0] == '#' && (*line)[1] != '#') || (*line)[0] == 0)
 	{
 		free(*line);
 		get_next_line(fd, line);
 	}
 }
 
+static int		handle_dst(char **line, int fd)
+{
+	int	i;
+	int	dst;
+
+	if (((*line)[0] == '#' && (*line)[1] != '#') || (*line)[0] == 0)
+		ignore_comments(line, fd);
+	else if ((*line)[0] == '#' && (*line)[1] == '#')
+	{
+		if (!ft_strcmp("start", *line + 2))
+			dst = 1;
+		else if (!ft_strcmp("end", *line + 2))
+			dst = 2;
+		else
+			return (-1);
+		free(*line);
+		get_next_line(fd, line);
+		ignore_comments(line, fd);
+		return (dst);
+	}
+	dst = -1;
+	i = 0;
+	while ((*line)[i])
+	{
+		if (dst != 0 && (*line)[i] == ' ')
+			dst = 0;
+		if ((*line)[i] == '-')
+			return (-1);
+		i++;
+	}
+	return (dst);
+}
+
+
 char			*read_map(t_all *all, int fd)
 {
 	int		dst;
-	int		c;
 	char	*line;
 
-	while (get_next_line(fd, &line) > 0
-			&& ((c = count_expr(line)) == 3 || c < 0 || line[0] == '#'))
+	dst = 0;
+	while (get_next_line(fd, &line) > 0)
 	{
-		if (c == -2)
-			ignore_comments(&line, fd, &c);
-		if ((dst = handle_dst(c, line)) < 0)
-			return (NULL);
-		if (dst != 0)
-		{
-			free(line);
-			if (get_next_line(fd, &line) < 0
-					|| ((c = count_expr(line)) < 3 && c != -2))
-				ft_strdel(&line);
-		}
-		if (c == -2)
-			ignore_comments(&line, fd, &c);
+		if (line[0] == '#' && line[1] != '#')
+			ignore_comments(&line, fd);
+		if ((dst = handle_dst(&line, fd)) < 0)
+			return (line);
 		get_room(all, line, dst);
 	}
-	if (c != 2)
-		ft_strdel(&line);
 	return (line);
 }
