@@ -1,11 +1,16 @@
-3
+5
 ##start
-start 432 0 1
+#comment
+#cc
+#ccc
+#cccc
+start 432 0 0
 ##end
 fin hehe 1 0
-0 0 0
 bonjour 1 1
 2 2 2
+#comment
+0 3 3
 0-bonjour
 0-2
 bonjour-0

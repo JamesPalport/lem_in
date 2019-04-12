@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 10:14:27 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/29 15:15:52 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/04/12 15:03:56 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,30 +66,6 @@ static int	ft_is_comp(t_routes **select, t_routes *route, int except)
 	return (1);
 }
 
-static int	replacable(t_all *all, t_routes *route, int except)
-{
-	int	i;
-	int	j;
-	int	count;
-
-	i = 1;
-	count = 0;
-	while (i < route->len)
-	{
-		j = 1;
-		while (j < all->select[except]->len)
-		{
-			if (all->select[except]->path[j] == route->path[i])
-				count++;
-			j++;
-		}
-		i++;
-	}
-	if (count > 1)
-		return (0);
-	return (ft_is_comp(all->select, route, except));
-}
-
 static t_routes	*search(t_routes *routes, t_routes *base, int m)
 {
 	int			i;
@@ -100,19 +76,48 @@ static t_routes	*search(t_routes *routes, t_routes *base, int m)
 		while (i < routes->len && i < base->len
 				&& routes->path[i] == base->path[i])
 			i++;
-		if (i != m)
-		{
-			i = -1;
-			while (i < -routes->len && i < -base->len
-					&& routes->path[routes->len + i]
-					== base->path[base->len + i])
-				i--;
-		}
-		if (i == m || (i < 0 && base->len + i == m))
+		if (i == m)
 			return (routes);
 		routes = routes->next;
 	}
 	return (NULL);
+}
+
+static void	sim_part(t_routes *route1, t_routes route2, int *start, int *end)
+{
+	int	m;
+	int	i;
+
+	m = 1;
+	while (m < route1->len && route1->path[m] != route2->path[i])
+	{
+		i = 1;
+		while (i < route2->len && route1->path[m] != route2->path[i])
+			i++;
+		if (i == route->len)
+			m++;
+	}
+	*start = m;
+	while (m < route1->len && i < route2->len
+			&& route1->path[m] == route2->path[i])
+	{
+		m++;
+		i++;
+	}
+	*end = m;
+}
+
+static t_routes	*from_to(t_all *all, t_routes *base, int *extr, t_routes *no)
+{
+	int			i;
+	int			*path;
+	t_routes	*new;
+
+	i = -1;
+	if (!(path = (int)malloc(sizeof(int) * all->nb_rooms)))
+		return (NULL);
+	while (++i < extr[0])
+		path[i] = base->path[i];
 }
 
 static void	search_replace(t_all *all, t_routes *route, int conflict, int n)
@@ -133,6 +138,11 @@ static void	search_replace(t_all *all, t_routes *route, int conflict, int n)
 			m++;
 	}
 	similar = search(route->next, all->select[conflict], m);
+/*	if (!similar)
+	{
+		alter_route(all, all->select[conflict], m);
+		similar = search(route->next, all->select[conflict], m);
+	}*/
 	if (similar && ((similar->len + (all->nb_ants / 2))
 			< (all->select[conflict]->len + all->nb_ants))
 			&& ft_comp_routes(route, similar))
@@ -156,7 +166,7 @@ void		chose_route(t_all *all)
 	{
 		if ((conflict = ft_is_comp(all->select, cursor, -1)) == 1)
 			all->select[n] = cursor;
-		else if (replacable(all, cursor, -conflict) == 1)
+		else if (ft_is_comp(all->select, cursor, -conflict) == 1)
 			search_replace(all, cursor, -conflict, n);
 		if (all->select[n])
 			n++;

@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:15:32 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/21 11:36:12 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/04/11 09:46:08 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,13 @@ static int		get_room(t_all *all, char *line, int dst)
 	return (1);
 }
 
-static void		ignore_comments(char **line, int fd)
+void		ignore_comments(char **line, int fd)
 {
 	while (((*line)[0] == '#' && (*line)[1] != '#') || (*line)[0] == 0)
 	{
 		free(*line);
-		get_next_line(fd, line);
+		if (get_next_line(fd, line) <= 0)
+			return ;
 	}
 }
 

@@ -87,7 +87,7 @@ void	display_read(t_all *all)
 	}
 }
 
-/*void	display_routes(t_all *all)
+void	display_routes(t_all *all)
 {
 	t_routes	*cursor;
 	int			i;
@@ -132,14 +132,18 @@ void	display_select(t_all *all)
 		cursor = cursor->next;
 		j++;
 	}
-}*/
+}
+
+#include <time.h>
 
 int	main(int argc, char **argv)
 {
 	int		fd;
 	t_all	all;
 	char	*name;
-//	t_tmpr	tmp_routes;
+	t_tmpr	tmp_routes;
+	clock_t	start;
+	clock_t	end;
 
 	all.nb_ants = 0;
 	all.rooms = NULL;
@@ -148,11 +152,11 @@ int	main(int argc, char **argv)
 	all.start = NULL;
 	all.end = NULL;
 	all.routes = NULL;
-/*	all.score = NULL;
+	all.score = NULL;
 	all.max_score = 0;
-	all.select = NULL;*/
-//	tmp_routes.to_vis = NULL;
-//	tmp_routes.new_vis = NULL;
+	all.select = NULL;
+	tmp_routes.to_vis = NULL;
+	tmp_routes.new_vis = NULL;
 	if (argc > 1)
 		name = argv[argc - 1];
 	else
@@ -166,20 +170,27 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	close(fd);
-	display_read(&all);
-/*	bfs(&all, -1, &tmp_routes);
+//	display_read(&all);
+	start = clock();
+	bfs(&all, -1, &tmp_routes);
+	end = clock();
+	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	get_routes(&all);
+	end = clock();
+	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	all.routes = order_routes(all.routes);
 //	display_routes(&all);
 	bfs(&all, all.max_score + all.routes->len, &tmp_routes);
+	end = clock();
+	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	get_routes(&all);
 	all.routes = order_routes(all.routes);
-//	display_routes(&all);
+	display_routes(&all);
 	chose_route(&all);
-//	display_select(&all);
+	display_select(&all);
 	move_ants(&all);
 	free_all(&all);
 	free(tmp_routes.to_vis);
-	free(tmp_routes.new_vis);*/
+	free(tmp_routes.new_vis);
 	return (1);
 }

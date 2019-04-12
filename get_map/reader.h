@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:27:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/01 09:54:47 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/04/12 14:15:44 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,25 @@
 # define READER_H
 # include "Libft/includes/libft.h"
 
+typedef struct	s_tmpr
+{
+	int	*to_vis;
+	int	*new_vis;
+}				t_tmpr;
+
 typedef struct	s_room
 {
 	char			*name;
 	int				x;
 	int				y;
+	int				empty;
 	struct s_room	*next;
 }				t_room;
 
 typedef struct	s_routes
 {
-	char			*path;
+	int				*path;
+	int				len;
 	struct s_routes	*next;
 }				t_routes;
 
@@ -34,15 +42,25 @@ typedef struct	s_all
 	t_room		*rooms;
 	int			nb_rooms;
 	int			**connec;
+	int			*score;
+	int			max_score;
 	t_room		*start;
 	t_room		*end;
 	t_routes	*routes;
+	t_routes	**select;
 }				t_all;
 
+int				*ft_newtab(int len);
 int				count_expr(char *line);
 char			*read_map(t_all *all, int fd);
+void			ignore_comments(char **line, int fd);
 int				read_connec(t_all *all, char *line, int fd);
 int				reader(t_all *all, int fd);
 int				get_routes(t_all *all);
+int				check_map(t_all *all);
+void			bfs(t_all *all, int supp, t_tmpr *tmp);
+t_routes		*order_routes(t_routes *routes);
+void			chose_route(t_all *all);
+void			move_ants(t_all *all);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:35:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/05 12:51:26 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/04/11 09:47:13 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static int	get_num(t_all *all, char *line)
 	len1 = 0;
 	while (line[len1] && line[len1] != '-')
 		len1++;
+	if (!len1)
+		return (-1);
 	cursor = all->rooms;
 	i = 1;
 	if (!ft_strncmp(line, all->start->name, len1))
@@ -82,12 +84,34 @@ static int	get_connec(t_all *all, char *line)
 	return (1);
 }
 
+#include <time.h>
+
 int			read_connec(t_all *all, char *line, int fd)
 {
-	int	c;
 	int	d;
+	clock_t	start;
+	clock_t	end;
 
 	init_connec(all);
+	d = 0;
+	start = clock();
+	d = get_connec(all, line);
+	free(line);
+	if (!d)
+		return (0);
+	while (get_next_line(fd, &line) > 0)
+	{
+		ignore_comments(&line, fd);
+		if (line && line[0] != '\0')
+			d = get_connec(all, line);
+		if (line)
+			ft_strdel(&line);
+	}
+	end = clock();
+	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
+	return (d);
+}
+/*
 	d = 0;
 	if ((c = count_expr(line)) == 2)
 	{
@@ -107,4 +131,4 @@ int			read_connec(t_all *all, char *line, int fd)
 		d = get_connec(all, line);
 	ft_strdel(&line);
 	return (d);
-}
+*/

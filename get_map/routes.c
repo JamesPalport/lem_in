@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:25:39 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/25 10:51:03 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/04/12 14:15:16 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,22 +61,26 @@ static int	is_auth(t_all *all, int curr, int i, int *route)
 	int	j;
 
 	j = 0;
-	while (j < all->nb_rooms && route[j] != -1)
-		if (route[j++] == i)
+	if ((i != curr && all->connec[curr][i] && all->score[i])
+			&& ((all->score[curr] == -1) || all->score[curr] > all->score[i]))
+	{
+		while (j < all->nb_rooms && route[j] != -1)
+			if (route[j++] == i)
 			return (0);
-	if (i != curr && all->connec[curr][i] && all->score[i])
-/* && ((all->score[curr] == -1)
- * || all->score[curr] >= all->score[i]))
-				*/
 		return (1);
+	}
 	return (0);
 }
 
-static void	go_next(t_all *all, int *route)
+#include <time.h>
+static void	go_start(t_all *all, int *route)
 {
 	int	i;
 	int	abs;
 	int	curr;
+	clock_t	start;
+	clock_t	end;
+	start = clock();
 
 	abs = 0;
 	while (abs < all->nb_rooms && route[abs] != -1)
@@ -91,13 +95,30 @@ static void	go_next(t_all *all, int *route)
 		{
 			route[abs] = i;
 			if (!route[abs])
+			{
 				save_route(all, route);
+				end = clock();
+				ft_printf("%f\t%d|%d\n", (double)(end - start) / CLOCKS_PER_SEC, i, all->nb_rooms);
+			}
 			else
-				go_next(all, route);
+				go_start(all, route);
 			route[abs] = -1;
 		}
 		i++;
 	}
+}
+
+int	*ft_newtab(int len)
+{
+	int	*route;
+	int	i;
+
+	if (!(route = (int *)malloc(sizeof(int) * len)))
+		return (NULL);
+	i = 0;
+	while (i < len)
+		route[i++] = -1;
+	return (route);
 }
 
 int			get_routes(t_all *all)
@@ -106,11 +127,9 @@ int			get_routes(t_all *all)
 	int			i;
 	static int	min_score;
 
-	if (!(route = (int *)malloc(sizeof(int) * all->nb_rooms)))
+
+	if (!(route = ft_newtab(all->nb_rooms)))
 		return (0);
-	i = 0;
-	while (i < all->nb_rooms)
-		route[i++] = -1;
 	route[0] = all->nb_rooms - 1;
 	i = 0;
 	while (i < all->nb_rooms - 1)
@@ -118,7 +137,7 @@ int			get_routes(t_all *all)
 		if (all->connec[all->nb_rooms - 1][i] && all->score[i] > min_score)
 		{
 			route[1] = i;
-			go_next(all, route);
+			go_start(all, route);
 			route[1] = -1;
 		}
 		i++;
