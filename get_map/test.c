@@ -174,15 +174,15 @@ int	main(int argc, char **argv)
 	start = clock();
 	bfs(&all, -1, &tmp_routes);
 	end = clock();
-	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
+//	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	get_routes(&all);
 	end = clock();
-	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
+//	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	all.routes = order_routes(all.routes);
 //	display_routes(&all);
 	bfs(&all, all.max_score + all.routes->len, &tmp_routes);
 	end = clock();
-	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
+//	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	get_routes(&all);
 	all.routes = order_routes(all.routes);
 	display_routes(&all);

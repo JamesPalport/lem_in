@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:25:39 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/04/12 14:15:16 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/05/21 15:57:30 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,15 +72,11 @@ static int	is_auth(t_all *all, int curr, int i, int *route)
 	return (0);
 }
 
-#include <time.h>
 static void	go_start(t_all *all, int *route)
 {
 	int	i;
 	int	abs;
 	int	curr;
-	clock_t	start;
-	clock_t	end;
-	start = clock();
 
 	abs = 0;
 	while (abs < all->nb_rooms && route[abs] != -1)
@@ -95,11 +91,7 @@ static void	go_start(t_all *all, int *route)
 		{
 			route[abs] = i;
 			if (!route[abs])
-			{
 				save_route(all, route);
-				end = clock();
-				ft_printf("%f\t%d|%d\n", (double)(end - start) / CLOCKS_PER_SEC, i, all->nb_rooms);
-			}
 			else
 				go_start(all, route);
 			route[abs] = -1;

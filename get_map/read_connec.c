@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:35:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/04/11 09:47:13 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/05/23 15:46:30 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,17 +84,12 @@ static int	get_connec(t_all *all, char *line)
 	return (1);
 }
 
-#include <time.h>
-
 int			read_connec(t_all *all, char *line, int fd)
 {
 	int	d;
-	clock_t	start;
-	clock_t	end;
 
 	init_connec(all);
 	d = 0;
-	start = clock();
 	d = get_connec(all, line);
 	free(line);
 	if (!d)
@@ -107,8 +102,6 @@ int			read_connec(t_all *all, char *line, int fd)
 		if (line)
 			ft_strdel(&line);
 	}
-	end = clock();
-	ft_printf("%f\n", (double)(end - start) / CLOCKS_PER_SEC);
 	return (d);
 }
 /*
