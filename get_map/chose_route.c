@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 10:14:27 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/05/28 14:53:14 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/05/30 16:55:43 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,69 +69,31 @@ static int	ft_is_comp(t_routes **select, t_routes *route, int except)
 static void	sim_part(t_routes *route1, t_routes *route2, int *extr)
 {
 	int	i;
+	int	k;
 
 	i = 1;
-	if (route1->path[1] == route2->path[1])
+	k = 0;
+	while (i < route1->len && i + k < route2->len
+			&& route1->path[i] != route2->path[i + k])
 	{
-		*(extr++) = 0;
-		while (i < route1->len && i < route2->len
-				&& route1->path[i] == route2->path[i])
+		k = 0;
+		while (i + k < route2->len && route1->path[i] != route2->path[i + k])
+			k++;
+		if (route1->path[i] != route2->path[i + k])
 			i++;
 	}
-	else
-	{
-		extr[1] = route1->len;
-		while (i < route1->len && i < route2->len
-				&& route1->path[i] != route2->path[i])
-			i++;
-	}
-	*extr = i - 1;
-}
-/*
-	int	m;
-	int	i;
-
-	m = 1;
-	while (m < route1->len && route1->path[m] != route2->path[i])
-	{
-		i = 1;
-		while (i < route2->len && route1->path[m] != route2->path[i])
-			i++;
-		if (i == route2->len)
-			m++;
-	}
-	extr[0] = m;
-	while (m < route1->len && i < route2->len
-			&& route1->path[m] == route2->path[i])
-	{
-		no[route1->path[m]] = 0;
-		m++;
+	extr[0] = i;
+	while (i < route1->len && i + k < route2->len
+			&& route1->path[i] != route2->path[i + k])
 		i++;
-	}
-	no[route1->path[extr[0]]] = 1;
-	no[route1->path[extr[1]]] = 1;
-	extr[1] = m;
-}*/
-/*
-static void		set_forb(t_all *all, int *no)
-{
-	int	i;
-	int	j;
-
-	j = 0;
-	while (all->select[j])
-	{
-		i = 1;
-		while (i < all->select[j]->len)
-			no[all->select[j]->path[i++]] = 0;
-		j++;
-	}
+	extr[1] = i;
 }
-*/
+
 static t_routes	*search(t_all *all, t_routes *routes, int c)
 {
 	int	extr[2];
 	int	i;
+	int	j;
 
 	sim_part(routes, all->select[c], extr);
 	ft_printf("extr :%d %d\n", extr[0], extr[1]);
@@ -139,10 +101,15 @@ static t_routes	*search(t_all *all, t_routes *routes, int c)
 	{
 		routes = routes->next;
 		i = 1;
-		while (i < all->select[c]->len && i < routes->len
-				&& routes->path[i] == all->select[c]->path[extr[0]]
-				&& routes->path[i] != all->select[c]->path[extr[0]])
+		while (i < extr[0] && i < routes->len
+				&& routes->path[i] == all->select[c]->path[i])
 			i++;
+		j = i;
+		while (j < routes->len
+				&& routes->path[j] != all->select[c]->path[extr[1]])
+			j++;
+		if (j == routes->len || i != extr[0])
+			return (NULL);
 		if (i != all->select[c]->len)
 		{
 			while (i < all->select[c]->len
@@ -152,7 +119,23 @@ static t_routes	*search(t_all *all, t_routes *routes, int c)
 	}
 	return (NULL);
 }
-/*
+
+static void		set_forb(t_all *all, int *no, int except)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	while (all->select[j])
+	{
+		i = 1;
+		if (j != except)
+			while (i < all->select[j]->len)
+				no[all->select[j]->path[i++]] = 0;
+		j++;
+	}
+}
+
 static t_routes	*from_to(t_all *all, t_routes *base, int *extr, int *no)
 {
 	int			i;
@@ -167,7 +150,6 @@ static t_routes	*from_to(t_all *all, t_routes *base, int *extr, int *no)
 		path[i] = base->path[i];
 	while (i < all->nb_rooms)
 		path[i++] = -1;
-	set_forb(all, no);
 	//reach_extr(all, no, path);
 	i = extr[0];
 	while (path[i] != -1)
@@ -176,7 +158,7 @@ static t_routes	*from_to(t_all *all, t_routes *base, int *extr, int *no)
 		return (NULL);
 	return (new);
 }
-*/
+
 static void	search_replace(t_all *all, t_routes *route, int c, int n)
 {
 	t_routes	*similar;
