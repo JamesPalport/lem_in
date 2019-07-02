@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:25:39 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/05/30 14:48:57 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/02 15:18:53 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	is_auth(t_all *all, int curr, int i, int *route)
 	{
 		while (j < all->nb_rooms && route[j] != -1)
 			if (route[j++] == i)
-			return (0);
+				return (0);
 		return (1);
 	}
 	return (0);
@@ -118,7 +118,6 @@ int			get_routes(t_all *all)
 	int			*route;
 	int			i;
 	static int	min_score;
-
 
 	if (!(route = ft_newtab(all->nb_rooms)))
 		return (0);

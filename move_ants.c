@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/29 10:38:24 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/03/29 14:14:17 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/02 12:20:18 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ static int	display_mov(t_all *all, int **paths, int *pos)
 	return (end);
 }
 
-void	move_ants(t_all *all)
+void		move_ants(t_all *all)
 {
 	int	**paths;
 	int	*pos;

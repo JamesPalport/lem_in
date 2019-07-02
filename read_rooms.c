@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:15:32 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/04/11 09:46:08 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/02 12:29:36 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ static int		handle_dst(char **line, int fd)
 	}
 	return (dst);
 }
-
 
 char			*read_map(t_all *all, int fd)
 {

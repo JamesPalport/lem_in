@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 10:35:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/05/23 15:46:30 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/02 12:28:28 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,8 @@ static int	get_num(t_all *all, char *line)
 		return (all->nb_rooms - 1);
 	else
 	{
-		while (cursor && (ft_strncmp(line, cursor->name, len1)))
-		{
-			i++;
+		while (cursor && (ft_strncmp(line, cursor->name, len1)) && i++)
 			cursor = cursor->next;
-		}
 	}
 	if (!cursor)
 		return (-1);
@@ -104,24 +101,3 @@ int			read_connec(t_all *all, char *line, int fd)
 	}
 	return (d);
 }
-/*
-	d = 0;
-	if ((c = count_expr(line)) == 2)
-	{
-		d = get_connec(all, line);
-	}
-	free(line);
-	if (!d)
-		return (0);
-	while (get_next_line(fd, &line)
-			&& ((c = count_expr(line)) == 2 || line[0] == '#'))
-	{
-		if (c == 2 && line[0] != '#')
-			d = get_connec(all, line);
-		ft_strdel(&line);
-	}
-	if (count_expr(line) == 2)
-		d = get_connec(all, line);
-	ft_strdel(&line);
-	return (d);
-*/
