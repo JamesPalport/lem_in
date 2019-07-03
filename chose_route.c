@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 10:14:27 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/07/02 15:26:21 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/03 15:07:32 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,9 @@ static int		*set_forb(t_all *all, int except)
 {
 	int	i;
 	int	j;
-	int	*no;
+	int	*yes;
 
-	if (!(no = ft_newtab(all->nb_rooms)))
+	if (!(yes = ft_newtab(all->nb_rooms)))
 		return (NULL);
 	j = 0;
 	while (all->select[j])
@@ -106,45 +106,107 @@ static int		*set_forb(t_all *all, int except)
 		i = 1;
 		if (j != except)
 			while (i < all->select[j]->len)
-				no[all->select[j]->path[i++]] = 0;
+				yes[all->select[j]->path[i++]] = 0;
 		j++;
 	}
-	return (no);
+	return (yes);
 }
 
-static t_routes	*from_to(t_all *all, t_routes *base, int *extr, int *no)
+static int		is_ok(t_all *all, int curr, int j, int *yes)
+{
+	if (curr != j && yes[j] && all->connec[curr][j])
+	{
+		if (all->score[curr] <= all->score[j])
+			return (2);
+		else if (all->score[curr] > all->score[j])
+			return (1);
+	}
+	return (0);
+}
+
+static t_routes	*reach_begin(t_all *all, int *patch, t_branch *br, int *yes)
+{
+	t_routes	*new;
+	int			curr;
+	int			i;
+	int			abs;
+
+	abs = 0;
+	while (abs < all->nb_rooms && patch[abs] != -1)
+		abs++;
+	if (abs == all->nb_rooms)
+		return (NULL);
+	curr = patch[abs - 1];
+	i = 1;
+	while (i < all->nb_rooms - 1)
+	{
+
+
+	}
+
+	return (new);
+}
+
+static t_routes	*from_to(t_all *all, t_routes *base, t_branch *br, int *yes)
 {
 	int			i;
-	int			*path;
+	int			j;
+	int			*patch;
 	t_routes	*new;
 
-	i = -1;
+	i = 0;
 	new = NULL;
-	if (!(path = (int *)malloc(sizeof(int) * all->nb_rooms)))
+	if (!(patch = ft_newtab(all->nb_rooms)))
 		return (NULL);
-	while (++i < extr[0])
-		path[i] = base->path[i];
-	while (i < all->nb_rooms)
-		path[i++] = -1;
-	(void)no;
-	//reach_extr(all, no, path);
-	i = extr[0];
-	while (path[i] != -1)
-		i++;
-	if (path[i - 1] != base->path[extr[1]])
-		return (NULL);
+	while (!new && i < br->len_finish)
+	{
+		patch[0] = br->finish[i++];
+		j = 1;
+		while (!new && j < all->nb_rooms - 1)
+		{
+			if (is_ok(all, patch[0], j, yes) != 0)
+			{
+				patch[1] = j;
+				new = reach_begin(all, patch, br, yes);
+			}
+			j++;
+		}
+	}
 	return (new);
+}
+
+t_branch		*set_branches(t_all *all, t_routes *route, int c)
+{
+	t_branch	*br;
+	int			extr[2];
+	int			i;
+
+	if (!(br = (t_branch *)malloc(sizeof(t_branch))))
+		return (NULL);
+	sim_part(all->select[c], route, extr);
+	br->len_begin = extr[0];
+	br->len_finish = all->select[c]->len - extr[1];
+	if (!(br->begin = ft_newtab(br->len_begin))
+			|| !(br->finish = ft_newtab(br->len_finish)))
+		return (0);
+	i = -1;
+	while (++i < extr[0])
+		br->begin[i] = all->select[c]->path[i];
+	i = -1;
+	while (++i + extr[1] < all->select[c]->len)
+		br->begin[i + extr[1]] = all->select[c]->path[i + extr[1]];
+	return (br);
 }
 
 static t_routes	*search_new(t_all *all, t_routes *route, int c)
 {
-	int	extr[2];
-	int	*no;
+	t_branch	*br;
+	int			*yes;
 
-	if (!(no = set_forb(all, c)))
+	if (!(yes = set_forb(all, c)))
 		return (NULL);
-	sim_part(all->select[c], route, extr);
-	from_to(all, all->select[c], extr, no);
+	br = set_branches(all, route, c);
+	from_to(all, all->select[c], br, yes);
 	return (NULL);
 }
 

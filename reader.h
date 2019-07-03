@@ -6,13 +6,21 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 10:27:10 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/07/02 15:20:24 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/03 15:07:35 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef READER_H
 # define READER_H
 # include "Libft/includes/libft.h"
+
+typedef struct	s_branch
+{
+	int	len_begin;
+	int	len_finish;
+	int	*begin;
+	int	*finish;
+}				t_branch;
 
 typedef struct	s_tmpr
 {

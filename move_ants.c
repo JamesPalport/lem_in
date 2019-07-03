@@ -6,7 +6,7 @@
 /*   By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/29 10:38:24 by amerrouc          #+#    #+#             */
-/*   Updated: 2019/07/02 12:20:18 by amerrouc         ###   ########.fr       */
+/*   Updated: 2019/07/03 11:22:48 by amerrouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void		move_ants(t_all *all)
 	int	*pos;
 	int	i;
 	int	end;
-
+	int	count = 0;
 	end = 0;
 	init_ants(&paths, &pos, all->nb_ants);
 	if (!paths || !pos)
@@ -118,5 +118,7 @@ void		move_ants(t_all *all)
 		while (i < all->nb_ants && (paths[i] = avail_route(all, paths, pos)))
 			pos[i++] = 1;
 		end = display_mov(all, paths, pos);
+		count++;
 	}
+	ft_printf("%d lignes", count);
 }

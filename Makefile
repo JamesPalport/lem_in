@@ -6,7 +6,7 @@
 #    By: amerrouc <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/09 15:04:16 by amerrouc          #+#    #+#              #
-#    Updated: 2019/03/29 12:46:01 by amerrouc         ###   ########.fr        #
+#    Updated: 2019/07/03 08:38:57 by amerrouc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ DOT_H = ./includes/filler.h
 
 all: $(NAME)
 
-$(NAME): $(LIB) $(OBJ) 
+$(NAME): $(LIB) $(OBJ)
 	gcc $(OBJ) $(LIB) -o $(NAME)
 
 %.o: %.c
