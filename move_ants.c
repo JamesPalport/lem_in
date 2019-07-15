@@ -120,5 +120,5 @@ void		move_ants(t_all *all)
 		end = display_mov(all, paths, pos);
 		count++;
 	}
-	ft_printf("%d lignes", count);
+	ft_printf("%d lignes\n", count);
 }

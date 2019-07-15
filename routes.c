@@ -12,7 +12,7 @@
 
 #include "reader.h"
 
-static void	append_route(t_all *all, t_routes *new)
+void		append_route(t_all *all, t_routes *new)
 {
 	t_routes	*cursor;
 
