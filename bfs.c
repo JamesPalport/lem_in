@@ -12,16 +12,12 @@
 
 #include "reader.h"
 
-static int		keep_vis(int *to_vis, int size, int exp_score, int max_score)
+static int		keep_vis(int *to_vis, int size)
 {
 	int	i;
 
 	i = 0;
-	if (exp_score > 0 && exp_score <= max_score)
-		return (0);
-	if (exp_score == -1 && to_vis[size - 1])
-		return (0);
-	while (i < size)
+	while (i < size - 1)
 		if (to_vis[i++])
 			return (1);
 	return (0);
@@ -84,7 +80,7 @@ static int		init_vect(t_all *all, t_tmpr *tmp)
 	return (1);
 }
 
-void			bfs(t_all *all, int exp_score, t_tmpr *tmp)
+void			bfs(t_all *all, t_tmpr *tmp)
 {
 	if (!all->score
 			&& !(all->score = (int *)malloc(sizeof(int) * all->nb_rooms)))
@@ -92,7 +88,7 @@ void			bfs(t_all *all, int exp_score, t_tmpr *tmp)
 	if (!tmp->new_vis && !tmp->to_vis)
 		if (!init_vect(all, tmp))
 			return ;
-	while (keep_vis(tmp->to_vis, all->nb_rooms, exp_score, all->max_score))
+	while (keep_vis(tmp->to_vis, all->nb_rooms))
 		assign_score(all, &(tmp->to_vis), &(tmp->new_vis));
 	tmp->to_vis[all->nb_rooms - 1] = 0;
 }

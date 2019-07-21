@@ -67,7 +67,7 @@ int				reader(t_all *all, int fd);
 int				get_routes(t_all *all);
 void			append_route(t_all *all, t_routes *new);
 int				check_map(t_all *all);
-void			bfs(t_all *all, int supp, t_tmpr *tmp);
+void			bfs(t_all *all, t_tmpr *tmp);
 t_routes		*order_routes(t_routes *routes);
 void			chose_route(t_all *all);
 void			move_ants(t_all *all);

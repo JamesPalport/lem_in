@@ -169,13 +169,15 @@ int	main(int argc, char **argv)
 	}
 	close(fd);
 //	display_read(&all);
-	bfs(&all, -1, &tmp_routes);
-	get_routes(&all);;
+	bfs(&all, &tmp_routes);
+	get_routes(&all);
+	if (all.routes == NULL)
+		return (ft_printf("map error: no route\n"));
 	all.routes = order_routes(all.routes);
 //	display_routes(&all);
-	bfs(&all, all.max_score + all.routes->len, &tmp_routes);
-	get_routes(&all);
-	all.routes = order_routes(all.routes);
+//	bfs(&all, all.max_score + all.routes->len, &tmp_routes);
+//	get_routes(&all);
+//	all.routes = order_routes(all.routes);
 	display_routes(&all);
 	chose_route(&all);
 	display_routes(&all);
