@@ -33,13 +33,29 @@ static void	init_ants(int ***paths, int **pos, int nb_ants)
 	}
 }
 
+static int	get_len(t_routes **select, int *path)
+{
+	int	i;
+
+	i = 0;
+	while (select[i])
+	{
+		if (select[i]->path == path)
+			return (select[i]->len);
+		i++;
+	}
+	return (0);
+}
+
 static int	*avail_route(t_all *all, int **paths, int *pos)
 {
 	int			i;
 	int			j;
+	int			min_len;
 	t_routes	*sel;
 
 	i = 0;
+	min_len = paths[0]? get_len(all->select, paths[0]): 0;
 	while (all->select[i])
 	{
 		j = 0;
@@ -50,7 +66,7 @@ static int	*avail_route(t_all *all, int **paths, int *pos)
 				sel = NULL;
 			j++;
 		}
-		if (sel)
+		if (sel && sel->len < min_len + all->nb_ants - j)
 			return (sel->path);
 		i++;
 	}
@@ -105,6 +121,7 @@ void		move_ants(t_all *all)
 	int	i;
 	int	end;
 	int	count = 0;
+
 	end = 0;
 	init_ants(&paths, &pos, all->nb_ants);
 	if (!paths || !pos)
