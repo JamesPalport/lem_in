@@ -61,7 +61,7 @@ static int	is_auth(t_all *all, int curr, int i, int *route)
 	int	j;
 
 	j = 0;
-	if ((i != curr && all->connec[curr][i] && all->score[i])
+	if ((i != curr && all->connec[curr][i]) && all->score[i]
 			&& ((all->score[curr] == -1) || all->score[curr] > all->score[i]))
 	{
 		while (j < all->nb_rooms && route[j] != -1)
@@ -81,7 +81,8 @@ static void	go_start(t_all *all, int *route)
 	abs = 0;
 	while (abs < all->nb_rooms && route[abs] != -1)
 		abs++;
-	if (abs == all->nb_rooms)
+	ft_printf("abs: %d\tmax: %d\n", abs, all->max_score);
+	if (abs == all->nb_rooms || abs >= 2 * all->max_score)
 		return ;
 	curr = route[abs - 1];
 	i = 0;

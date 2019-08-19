@@ -66,7 +66,7 @@ static int	*avail_route(t_all *all, int **paths, int *pos)
 				sel = NULL;
 			j++;
 		}
-		if (sel && sel->len < min_len + all->nb_ants - j)
+		if (sel && (!j || sel->len < min_len + (all->nb_ants - j)))
 			return (sel->path);
 		i++;
 	}

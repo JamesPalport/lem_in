@@ -17,7 +17,7 @@ SRC = reader.c read_rooms.c read_connec.c routes.c check_map.c bfs.c test.c	\
 
 OBJ = $(SRC:.c=.o)
 
-FLAG = -Wall -Wextra -Werror -g
+FLAG = 
 
 INC = -Iincludes/ -ILibft/includes
 
