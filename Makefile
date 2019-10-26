@@ -12,25 +12,31 @@
 
 NAME = a.out
 
-SRC = reader.c read_rooms.c read_connec.c routes.c check_map.c bfs.c test.c	\
+SRCFILES = reader.c read_rooms.c read_connec.c routes.c check_map.c bfs.c test.c	\
 	  order_routes.c chose_route.c move_ants.c
 
-OBJ = $(SRC:.c=.o)
+SRCDIR = src/
 
-FLAG = 
+SRC = $(addprefix $(SRCDIR), $(SRCFILES))
 
-INC = -Iincludes/ -ILibft/includes
+OBJDIR = ./obj/
+
+OBJ = $(addprefix $(OBJDIR), $(SRCFILES:.c=.o))
+
+DOT_H = includes/reader.h
+
+FLAG = -g 
+
+INC = -Iincludes/ -ILibft/includes/
 
 LIB = Libft/libft.a
-
-DOT_H = ./includes/filler.h
 
 all: $(NAME)
 
 $(NAME): $(LIB) $(OBJ)
 	gcc $(OBJ) $(LIB) -o $(NAME)
 
-%.o: %.c
+$(OBJDIR)%.o: $(SRCDIR)%.c $(DOT_H)
 	gcc $(FLAG) $(INC) -o $@ -c $<
 
 $(LIB):
